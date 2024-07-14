@@ -1,10 +1,26 @@
-from flask import Flask
+from flask import Flask, request, jsonify
+from werkzeug.utils import secure_filename
 from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 CORS(app)
+
+UPLOAD_FOLDER = os.path.join(
+    os.getcwd(), "src", "herndon_law_file_service", "static")
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
 @app.route("/")
 def index():
     return "<h1>Herndon Law File Service</h1>"
+
+
+@app.route("/file-upload", methods=["POST"])
+def upload_file():
+    if "file" not in request.files:
+        return jsonify({"isError": True}), 400
+    file = request.files["file"]
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+    return jsonify({"isError": False, "url": f"http://127.0.0.1/static/{filename}"}), 200
