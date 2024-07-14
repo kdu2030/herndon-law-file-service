@@ -9,6 +9,7 @@ CORS(app)
 UPLOAD_FOLDER = os.path.join(
     os.getcwd(), "src", "herndon_law_file_service", "static")
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+BASE_URL = "http://127.0.0.1:5000" if app.debug else "https://herndonlawfileservice.pythonanywhere.com"
 
 
 @app.route("/")
@@ -23,4 +24,4 @@ def upload_file():
     file = request.files["file"]
     filename = secure_filename(file.filename)
     file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-    return jsonify({"isError": False, "url": f"http://127.0.0.1/static/{filename}"}), 200
+    return jsonify({"isError": False, "url": f"${BASE_URL}/static/{filename}"}), 200
