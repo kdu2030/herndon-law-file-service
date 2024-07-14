@@ -24,4 +24,4 @@ def upload_file():
     file = request.files["file"]
     filename = secure_filename(file.filename)
     file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
-    return jsonify({"isError": False, "url": f"${BASE_URL}/static/{filename}"}), 200
+    return jsonify({"isError": False, "url": f"{BASE_URL}/static/{filename}"}), 200
