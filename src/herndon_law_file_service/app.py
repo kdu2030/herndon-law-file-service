@@ -22,6 +22,9 @@ def upload_file():
     if "file" not in request.files:
         return jsonify({"isError": True}), 400
     file = request.files["file"]
-    filename = secure_filename(file.filename)
+
+    file_extension = file.filename.split(".")[1]
+    num_files = len(os.listdir(UPLOAD_FOLDER))
+    filename = secure_filename(f"{num_files}.{file_extension}")
     file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
     return jsonify({"isError": False, "url": f"{BASE_URL}/static/{filename}"}), 200
