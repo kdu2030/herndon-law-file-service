@@ -17,7 +17,7 @@ def index():
     return "<h1>Herndon Law File Service</h1>"
 
 
-@app.route("/file-upload", methods=["POST"])
+@app.route("/file", methods=["POST"])
 def upload_file():
     if "file" not in request.files:
         return jsonify({"isError": True}), 400
@@ -28,3 +28,12 @@ def upload_file():
     filename = secure_filename(f"{num_files}.{file_extension}")
     file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
     return jsonify({"isError": False, "url": f"{BASE_URL}/static/{filename}"}), 200
+
+
+@app.route("/file/<file_name>", methods=["DELETE"])
+def delete_file(file_name: str):
+    file_path = os.path.join(UPLOAD_FOLDER, str(file_name))
+    if not os.path.exists(file_path):
+        return jsonify({"isError": True, "errorMessage": "File does not exist."}), 400
+    os.remove(file_path)
+    return jsonify({"isError": False})
